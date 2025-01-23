@@ -148,7 +148,7 @@ const lastTries100 = process(lastNames.slice(0,100));
 
 document.getElementById('clicker').onclick = function() {
   let fSource = document.getElementById('fsource').value;
-  let lSource = document.getElementById('fsource').value;
+  let lSource = document.getElementById('lsource').value;
   let fname = "";
   let lname = "";
 
@@ -173,12 +173,12 @@ document.getElementById('clicker').onclick = function() {
     fname = newName(maleTries100, 1);
   }
 
+
   if (lSource === "All Names") {
     lname = newName(lastTries, 1);
   } else if (lSource === "Top 100") {
     lname = newName(lastTries100, 1);
   }
-  
   document.getElementById('trie').innerHTML = fname + " " + lname;
 }
 
