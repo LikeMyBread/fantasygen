@@ -9,6 +9,10 @@ function sRandomInt(seed, max, min) {
   return min + Math.floor(sRandom(seed) * (max - min));
 }
 
+function draw(array) {
+  return array[Math.floor(Math.random() * array.length)];
+}
+
 class Trie {
   static insertNode(node, item) {
     if (node[item]) {
@@ -114,21 +118,21 @@ function capitalizeName(name) {
 
 /***************/
 
-const SLICE_LENGTH = 4;
+const SLICE_LENGTH = 5;
 
 function process(list) {
   const prefixes = {};
   const suffixes = {};
-  for (var i = 0; i < list.length; i++) {
+  for (let i = 0; i < list.length; i++) {
     list[i] = list[i].toLowerCase();
   }
   
-  for (var i = 0; i < list.length; i++) {
+  for (let i = 0; i < list.length; i++) {
     Trie.addWord(prefixes, list[i].toLowerCase().slice(0, SLICE_LENGTH));
   }
   
-  for (var i = 0; i < list.length; i++) {
-    for (var j = 1; j < list[i].length; j++) {
+  for (let i = 0; i < list.length; i++) {
+    for (let j = 1; j < list[i].length; j++) {
       Trie.addWord(suffixes, list[i].toLowerCase().slice(j, j + SLICE_LENGTH));
     }
   }
@@ -171,21 +175,84 @@ document.getElementById('clicker').onclick = function() {
     fname = newName(femaleTries100, 1);
   } else if (fSource === "Masculine Names (Top 100)") {
     fname = newName(maleTries100, 1);
+  } else if (fSource === "Popular Names") {
+    fname = anyName();
+  } else if (fSource === "Popular Feminine Names") {
+    fname = femaleName();
+  } else if (fSource === "Popular Masculine Names") {
+    fname = maleName();
+  } else if (fSource === "Unpopular Names") {
+    if (Math.random() > 0.5) {
+      fname = draw(femaleNames);
+    } else {
+      fname = draw(maleNames);
+    }
+  } else if (fSource === "Unpopular Feminine Names") {
+    fname = draw(femaleNames);
+  } else if (fSource === "Unpopular Masculine Names") {
+    fname = draw(maleNames);
   }
-
 
   if (lSource === "All Names") {
     lname = newName(lastTries, 1);
   } else if (lSource === "Top 100") {
     lname = newName(lastTries100, 1);
+  } else if (lSource === "Popular Names") {
+    lname = lastName();
+  } else if (lSource === "Unpopular Names") {
+    lname = draw(lastNames);
   }
+
+
+  fname = capitalizeName(fname);
+  lname = capitalizeName(lname);
   document.getElementById('trie').innerHTML = fname + " " + lname;
 }
 
 function newName(nameTries, minLength) {
-  let name = capitalizeName(Trie.randomWord(nameTries.prefixes));
+  let name = Trie.randomWord(nameTries.prefixes);
   do {
     name += Trie.randomWord(nameTries.suffixes[name.slice(-1)]);
   } while (name.length < minLength);
   return name;
+}
+
+
+// Name selectors
+function anyName() {
+  if (Math.random() > 0.5) {
+    return femaleName();
+  } else {
+    return maleName();
+  }
+}
+
+function femaleName() {
+  let total = Math.floor(Math.random() * femaleNameTotal);
+  let i = 0;
+  while (total > 0) {
+      total -= femaleWeights[i];
+      i++;
+  }
+  return femaleNames[i];
+}
+
+function maleName() {
+    let total = Math.floor(Math.random() * maleNameTotal);
+    let i = 0;
+    while (total > 0) {
+        total -= maleWeights[i];
+        i++;
+    }
+    return maleNames[i];
+}
+
+function lastName() {
+    let total = Math.floor(Math.random() * lastNameTotal);
+    let i = 0;
+    while (total > 0) {
+        total -= lastWeights[i];
+        i++;
+    }
+    return lastNames[i];
 }
