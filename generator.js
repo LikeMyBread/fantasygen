@@ -156,7 +156,7 @@ document.getElementById('clicker').onclick = function() {
   let fname = "";
   let lname = "";
 
-  if (fSource === "All Names") {
+  if (fSource === "All Fantasy Names") {
     let roll = Math.random();
     if (roll < 0.33) {
       fname = newName(femaleTries, 1);
@@ -165,41 +165,45 @@ document.getElementById('clicker').onclick = function() {
     } else {
       fname = newName(androgynousTries, 1);
     }
-  } else if (fSource === "Androgynous Names") {
+  } else if (fSource === "Androgynous Fantasy Names") {
     fname = newName(androgynousTries, 1);
-  } else if (fSource === "Feminine Names") {
+  } else if (fSource === "Feminine Fantasy Names") {
     fname = newName(femaleTries, 1);
-  } else if (fSource === "Masculine Names") {
+  } else if (fSource === "Masculine Fantasy Names") {
     fname = newName(maleTries, 1);
-  } else if (fSource === "Feminine Names (Top 100)") {
+  } else if (fSource === "Feminine Fantasy Names (Top 100)") {
     fname = newName(femaleTries100, 1);
-  } else if (fSource === "Masculine Names (Top 100)") {
+  } else if (fSource === "Masculine Fantasy Names (Top 100)") {
     fname = newName(maleTries100, 1);
-  } else if (fSource === "Popular Names") {
+  } else if (fSource === "Popular Real Names") {
     fname = anyName();
-  } else if (fSource === "Popular Feminine Names") {
+  } else if (fSource === "Popular Androgynous Real Names") {
+    fname = androgynousName();
+  } else if (fSource === "Popular Feminine Real Names") {
     fname = femaleName();
-  } else if (fSource === "Popular Masculine Names") {
+  } else if (fSource === "Popular Masculine Real Names") {
     fname = maleName();
-  } else if (fSource === "Unpopular Names") {
+  } else if (fSource === "Unpopular Real Names") {
     if (Math.random() > 0.5) {
       fname = draw(femaleNames);
     } else {
       fname = draw(maleNames);
     }
-  } else if (fSource === "Unpopular Feminine Names") {
+  } else if (fSource === "Unpopular Androgynous Real Names") {
+    fname = draw(androgynousNames);
+  } else if (fSource === "Unpopular Feminine Real Names") {
     fname = draw(femaleNames);
-  } else if (fSource === "Unpopular Masculine Names") {
+  } else if (fSource === "Unpopular Masculine Real Names") {
     fname = draw(maleNames);
   }
 
-  if (lSource === "All Names") {
+  if (lSource === "All Fantasy Names") {
     lname = newName(lastTries, 1);
-  } else if (lSource === "Top 100") {
+  } else if (lSource === "Top 100 Fantasy Names") {
     lname = newName(lastTries100, 1);
-  } else if (lSource === "Popular Names") {
+  } else if (lSource === "Popular Real Names") {
     lname = lastName();
-  } else if (lSource === "Unpopular Names") {
+  } else if (lSource === "Unpopular Real Names") {
     lname = draw(lastNames);
   }
 
@@ -225,6 +229,16 @@ function anyName() {
   } else {
     return maleName();
   }
+}
+
+function androgynousName() {
+  let total = Math.floor(Math.random() * androgynousNameTotal);
+  let i = 0;
+  while (total > 0) {
+      total -= androgynousWeights[i];
+      i++;
+  }
+  return androgynousNames[i];
 }
 
 function femaleName() {
@@ -256,3 +270,33 @@ function lastName() {
     }
     return lastNames[i];
 }
+
+function calculateAndrogynous() {
+  let androgynousTotal = 0;
+  let androgynousNames = [];
+  let androgynousWeights = [];
+  let androgynousData = [];
+  for (let i = 0; i < femaleNames.length; i++) {
+    let mPosition = maleNames.indexOf(femaleNames[i]);
+    if (mPosition !== -1) {
+      androgynousData.push(
+        {
+          name: femaleNames[i],
+          weight: Math.min(femaleWeights[i], maleWeights[mPosition])
+        }
+      );
+    }
+  }
+  androgynousData.sort(function(a, b) {
+    return ((a.weight > b.weight) ? -1 : ((a.weight == b.weight) ? 0 : 1));
+});
+  for (let i = 0; i < androgynousData.length; i++) {
+    const element = androgynousData[i];
+    androgynousNames.push(element.name);
+    androgynousWeights.push(element.weight);
+    androgynousTotal += element.weight;
+  }
+  return androgynousTotal;
+}
+
+// download(JSON.stringify(calculateAndrogynous()), 'androgynousData.txt', 'text/plain');
