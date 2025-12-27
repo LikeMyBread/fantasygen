@@ -197,7 +197,7 @@ document.getElementById('clicker').onclick = function() {
   } else if (fSource === "Unpopular Masculine Real Names") {
     fname = draw(maleNames);
   } else if (fSource === "Mononyms") {
-    fname = newName(monoTries, 5);
+    fname = newName(monoTries, 7);
   }
 
   if (lSource === "All Fantasy Names") {
