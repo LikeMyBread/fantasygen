@@ -151,7 +151,7 @@ const maleTries100 = process(maleNames.slice(0,100), SLICE_LENGTH);
 const lastTries100 = process(lastNames.slice(0,100), SLICE_LENGTH);
 const monoTries = process(femaleNames.concat(maleNames), 2);
 const wordTries = process(words, SLICE_LENGTH);
-const tiffTries = process(tiffWords, 4);
+const tiffTries = process(tiffWords, SLICE_LENGTH);
 
 document.getElementById('clicker').onclick = function() {
   let fSource = document.getElementById('fsource').value;
@@ -204,6 +204,12 @@ document.getElementById('clicker').onclick = function() {
     fname = newName(wordTries, 1);
   } else if (fSource === "tiffWords") {
     fname = newName(tiffTries, 1);
+  } else if (fSource === "tiffatiel") {
+    if (Math.random() > 0.5) {
+      fname = hybridName(tiffTries, androgynousTries, 1);
+    } else {
+      fname = hybridName(androgynousTries, tiffTries, 1);
+    }
   }
 
   if (lSource === "All Fantasy Names") {
@@ -226,6 +232,14 @@ function newName(nameTries, minLength) {
   let name = Trie.randomWord(nameTries.prefixes);
   do {
     name += Trie.randomWord(nameTries.suffixes[name.slice(-1)]);
+  } while (name.length < minLength);
+  return name;
+}
+
+function hybridName(prefixTries, suffixTries, minLength) {
+  let name = Trie.randomWord(prefixTries.prefixes);
+  do {
+    name += Trie.randomWord(suffixTries.suffixes[name.slice(-1)]);
   } while (name.length < minLength);
   return name;
 }
