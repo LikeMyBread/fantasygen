@@ -151,6 +151,7 @@ const maleTries100 = process(maleNames.slice(0,100), SLICE_LENGTH);
 const lastTries100 = process(lastNames.slice(0,100), SLICE_LENGTH);
 const monoTries = process(femaleNames.concat(maleNames), 2);
 const wordTries = process(words, SLICE_LENGTH);
+const tiffTries = process(tiffWords, 4);
 
 document.getElementById('clicker').onclick = function() {
   let fSource = document.getElementById('fsource').value;
@@ -201,6 +202,8 @@ document.getElementById('clicker').onclick = function() {
     fname = newName(monoTries, 7);
   } else if (fSource === "Words") {
     fname = newName(wordTries, 1);
+  } else if (fSource === "tiffWords") {
+    fname = newName(tiffTries, 1);
   }
 
   if (lSource === "All Fantasy Names") {
