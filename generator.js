@@ -120,7 +120,7 @@ function capitalizeName(name) {
 
 const SLICE_LENGTH = 5;
 
-function process(list) {
+function process(list, slice_length) {
   const prefixes = {};
   const suffixes = {};
   for (let i = 0; i < list.length; i++) {
@@ -128,12 +128,12 @@ function process(list) {
   }
   
   for (let i = 0; i < list.length; i++) {
-    Trie.addWord(prefixes, list[i].toLowerCase().slice(0, SLICE_LENGTH));
+    Trie.addWord(prefixes, list[i].toLowerCase().slice(0, slice_length));
   }
   
   for (let i = 0; i < list.length; i++) {
     for (let j = 1; j < list[i].length; j++) {
-      Trie.addWord(suffixes, list[i].toLowerCase().slice(j, j + SLICE_LENGTH));
+      Trie.addWord(suffixes, list[i].toLowerCase().slice(j, j + slice_length));
     }
   }
   return {
@@ -142,13 +142,14 @@ function process(list) {
   };
 }
 
-const androgynousTries = process(femaleNames.concat(maleNames));
-const femaleTries = process(femaleNames);
-const maleTries = process(maleNames);
-const lastTries = process(lastNames);
-const femaleTries100 = process(femaleNames.slice(0,100));
-const maleTries100 = process(maleNames.slice(0,100));
-const lastTries100 = process(lastNames.slice(0,100));
+const androgynousTries = process(femaleNames.concat(maleNames), SLICE_LENGTH);
+const femaleTries = process(femaleNames, SLICE_LENGTH);
+const maleTries = process(maleNames, SLICE_LENGTH);
+const lastTries = process(lastNames, SLICE_LENGTH);
+const femaleTries100 = process(femaleNames.slice(0,100), SLICE_LENGTH);
+const maleTries100 = process(maleNames.slice(0,100), SLICE_LENGTH);
+const lastTries100 = process(lastNames.slice(0,100), SLICE_LENGTH);
+const monoTries = process(femaleNames.concat(maleNames), 2);
 
 document.getElementById('clicker').onclick = function() {
   let fSource = document.getElementById('fsource').value;
@@ -195,6 +196,8 @@ document.getElementById('clicker').onclick = function() {
     fname = draw(femaleNames);
   } else if (fSource === "Unpopular Masculine Real Names") {
     fname = draw(maleNames);
+  } else if (fSource === "Mononyms") {
+    fname = newName(monoTries, 5);
   }
 
   if (lSource === "All Fantasy Names") {
